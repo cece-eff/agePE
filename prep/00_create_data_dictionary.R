@@ -50,7 +50,8 @@ description <- c("ID number assigned to participant by Qualtrics", "Participant'
                  "Participant's Date of Birth - Year", "Age of participants in years", "Participant's Sex assigned at Birth", "Participant's Gender", " ", 
                  "Participant's Ethnicity", "Participant's Race", "Participant's Education", "Self-reported health", "Number of people in participant's household", 
                  "Participant's household income", "Participant's occupation", "Participant's self-reported SES relative to US", "Participant's self-reported SES relative to community", 
-                 "Should we use your data?", "Participant's age group", "Emotion rated on that trial", "?x?", "?y?", "?valence?", "?arousal?", ### help###
+                 "Should we use your data?", "Participant's age group", "Emotion rated on that trial", 
+                 "x coordinate on dARM", "y coordinate on dARM", "valence rating on dARM", "arousal rating on dARM", 
                  "Ultimatium game offer number", "How much money is offered on this trial of Ultimatium game", 
                  "reward prediction error", "valence prediction error", "arousal prediction error", "accept or reject the offer", 
                  "Center for Epidemologic Studies Depression Scale (CES-D) item number", 
