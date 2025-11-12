@@ -133,7 +133,6 @@ clean_ultimatum <- function(dt) {
   return(demo)
 }
 
-  
 ######EMO CLASSIFICATION CLEANING #############
   clean_emoclass <- function(emo_class){
     emoclass<-d1[c(1,22:61)]
@@ -148,4 +147,41 @@ clean_ultimatum <- function(dt) {
     return(emo)
   }
   
+  ### CLEAN AND SCORE CES-d ####
+  clean_and_score_cesd <- function(data) {
+    dt<-data[c(1, 188:207)]
+    # rename columns
+    dt <- dt %>%
+      rename_with(~ gsub("Q386_", "CESd_", .x))
+    # convert values to numeric
+    dt<-dt %>% mutate(across(c(CESd_1:CESd_20), as.numeric))
+    
+    #recode
+    dt[dt =="1"]<-0
+    dt[dt =="2"]<-1
+    dt[dt =="3"]<-2
+    dt[dt =="4"]<-3
+    
+    #reverse code items 4, 8, 12, and 16
+    dtnew<-dt %>% mutate(q4rev = 3 - CESd_4,
+                         q8rev = 3 - CESd_8,
+                         q12rev = 3 - CESd_12,
+                         q16rev = 3 - CESd_16)
+    
+    
+    ##sum score w/o old items
+    sum<-dtnew %>% mutate(Score_CESd = rowSums(select(., -c(id, CESd_4, CESd_8, CESd_12, CESd_16)), na.rm=TRUE))
+    
+    CESd <- sum %>%  mutate(Category_CESd = ifelse(Score_CESd > 16, "Depressed", "Healthy"))
+    
+    CESd <- CESd %>% pivot_longer(
+      starts_with("CESd_"),
+      names_to = "CESd_item",
+      values_to = "CESd_rating"
+    )
+    CESd <- CESd %>% select(-q4rev, -q8rev, -q12rev, -q16rev)
+    CESd <- CESd %>% relocate(c(CESd_item:CESd_rating))
+
+    return(CESd)
+  }
   

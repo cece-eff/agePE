@@ -1,12 +1,11 @@
 ##clean raw pilot data and data manipulation check 
-## CCF 12.7.23
+## CCF 12.7.23 updated KLS 11.11.25 
 
 ##install packages
 library(readr)
 library(dplyr)
 library(tidyverse)
 library(here)
-
 
 # Load source functions
 source(here::here('src', 'cleaning_functions.R'))
@@ -29,20 +28,35 @@ source(here::here('src', 'cleaning_functions.R'))
   
 #merge dataframes
 dt<-bind_rows(ya, ma, oa)
+rm(ya, ma, oa)
 
 ##remove unnecessary columns at beginning
 d1 <- dt[18:length(dt)]
 names(d1)[1] <- "id"
+rm(dt)
 
-##save cleaned data for each task subtype 
-    ##ultimatum game
-    ult<-clean_ultimatum(d1)
-    write.csv(ult, here::here('cleaned_data', 'cleaned_data_ultimatum.csv'), row.names=FALSE)
-    
-    ##demographics
-    demo<-clean_demographics(d1)
-    write.csv(demo, here::here('cleaned_data', 'cleaned_data_demo.csv'), row.names=FALSE)
-    
-    ##emotion classification
-    emoclass<-clean_emoclass(d1)
-    write.csv(emoclass, here::here('cleaned_data', 'cleaned_data_emoclass.csv'), row.names=FALSE)
+##cleaned data for each task subtype and recombine
+##ultimatum game
+ult<-clean_ultimatum(d1)
+
+##demographics
+demo<-clean_demographics(d1)
+
+##emotion classification
+emoclass<-clean_emoclass(d1)
+
+##depression 
+cesd<-clean_and_score_cesd(d1)
+
+## combine
+d2 <- left_join(demo, emoclass, by = 'id')
+d3 <- left_join(demo, ult, by = 'id')
+d4 <- left_join(demo, cesd, by = 'id')
+d5 <- bind_rows(d2, d3)
+d6 <- bind_rows(d5, d4)
+
+## order by id
+d6 <- arrange(d6, id)
+
+# save new file with data in long format
+write.csv(d6, here('data', 'agePE_data.csv'), row.names = FALSE)
