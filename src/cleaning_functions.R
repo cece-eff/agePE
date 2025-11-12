@@ -180,7 +180,7 @@ clean_ultimatum <- function(dt) {
       values_to = "CESd_rating"
     )
     CESd <- CESd %>% select(-q4rev, -q8rev, -q12rev, -q16rev)
-    CESd <- CESd %>% relocate(c(CESd_item:CESd_rating))
+    CESd <- CESd %>% relocate(c(id, CESd_item:CESd_rating))
 
     return(CESd)
   }
