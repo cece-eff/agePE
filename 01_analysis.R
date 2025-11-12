@@ -1,5 +1,5 @@
 #analyze cleaned data
-##CCF 4.2024 
+##CCF 4.2024 updated KLS 11.11.25
 
 library(here)         # relative paths
 library(tidyverse)    # tidy functions
@@ -8,18 +8,13 @@ library(lmerTest)     # mixed-effects regressions
 library(sjPlot)       # clean tables
 
 # Load source functions
-source(here::here('src', 'exclude.r'))
+source(here('src', 'exclude.r'))
 
 #import cleaned data
-ult <- read.csv(here::here('cleaned_data', 'cleaned_data_ultimatum.csv'))
-demo <- read.csv(here::here('cleaned_data', 'cleaned_data_demo.csv'))
+dt <- read.csv(here('data', 'agePE_data.csv'))
 
 #exclude participants
-ult<- exclude_participants(ult)
-demo<- exclude_participants(demo)
-
-##combine dfs
-dt<-merge(ult, demo, by= 'id')
+dt <- exclude_participants(dt)
 
 ##ensure correct format of variables
 dt$age_group<-as.factor(dt$age_group)
@@ -40,7 +35,7 @@ dt$age_s<-scale(dt$age, center=FALSE)
                 control = glmerControl(optimizer = 'bobyqa',
                                        optCtrl = list(maxfun=2e5)))
   summary(modela)
-  tab_model(modela, file= "model2table.doc", transform = NULL, title = "Emotion Prediction Errors", 
+  tab_model(modela, file= here("output", "model2table.doc"), transform = NULL, title = "Emotion Prediction Errors", 
             pred.labels = c("Intercept", "Reward PE", "Age", "Valence PE", "Arousal PE",
                             "Reward PE:Age", "Valence PE:Age", "Arousal PE:Age"),
             dv.labels = c("Estimates"), string.est = "Log-Odds", string.se = "SE", string.stat = "Z", 
